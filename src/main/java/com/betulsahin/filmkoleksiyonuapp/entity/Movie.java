@@ -32,14 +32,14 @@ public class Movie {
 
     private String language;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany
     @JoinTable(
             name = "movie_category",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> movieCategories = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany
     @JoinTable(
             name = "movie_actor",
             joinColumns = @JoinColumn(name="movie_id"),

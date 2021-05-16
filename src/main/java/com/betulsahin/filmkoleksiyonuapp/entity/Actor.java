@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -28,6 +27,12 @@ public class Actor {
 
     private String role;
 
-    @ManyToMany(mappedBy = "movieCast", cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "movieCast")
     Set<Movie> movies = new HashSet<>();
+
+    public Actor(String firstName, String lastName, String role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+    }
 }

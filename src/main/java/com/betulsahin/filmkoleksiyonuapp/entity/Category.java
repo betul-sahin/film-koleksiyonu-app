@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -23,6 +22,10 @@ public class Category {
     @Column(length = 100)
     private String name;
 
-    @ManyToMany(mappedBy = "movieCategories", cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "movieCategories")
     Set<Movie> movies = new HashSet<>();
+
+    public Category(String name) {
+        this.name = name;
+    }
 }
