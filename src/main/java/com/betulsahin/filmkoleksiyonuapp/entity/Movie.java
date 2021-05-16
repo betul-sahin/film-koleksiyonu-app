@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -46,4 +45,12 @@ public class Movie {
             joinColumns = @JoinColumn(name="movie_id"),
             inverseJoinColumns = @JoinColumn(name="actor_id"))
     Set<Actor> movieCast = new HashSet<>();
+
+    public Movie(String name, String description, int releaseYear, String media, String language) {
+        this.name = name;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.media = media;
+        this.language = language;
+    }
 }
