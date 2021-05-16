@@ -7,6 +7,8 @@ import com.betulsahin.filmkoleksiyonuapp.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MovieService {
 
@@ -22,5 +24,9 @@ public class MovieService {
     public Movie save(Movie movie){
         Movie savedMovie = movieRepository.save(movie);
         return savedMovie;
+    }
+
+    public List<Movie> getAll(){
+        return movieRepository.findAll();
     }
 }
