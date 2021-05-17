@@ -19,20 +19,16 @@ public class Actor {
     @GeneratedValue(generator = "sequence_actor", strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "first_name", length = 100)
-    private String firstName;
-
-    @Column(name = "last_name", length = 100)
-    private String lastName;
+    @Column(name = "full_name", length = 100)
+    private String fullName;
 
     private String role;
 
     @ManyToMany(mappedBy = "movieCast")
     Set<Movie> movies = new HashSet<>();
 
-    public Actor(String firstName, String lastName, String role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Actor(String fullName, String role) {
+        this.fullName = fullName;
         this.role = role;
     }
 }
