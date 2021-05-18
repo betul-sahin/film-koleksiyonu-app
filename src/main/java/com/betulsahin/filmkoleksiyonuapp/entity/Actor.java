@@ -24,8 +24,9 @@ public class Actor {
 
     private String role;
 
-    @ManyToMany(mappedBy = "movieCast")
-    Set<Movie> movies = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="movie_id", nullable = false)
+    public Movie movie;
 
     public Actor(String fullName, String role) {
         this.fullName = fullName;

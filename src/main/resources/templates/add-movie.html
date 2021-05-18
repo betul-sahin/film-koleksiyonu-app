@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container my-5">
-    <h2>Yeni Film Ekleme Formu</h2>
+    <h2>Film Ekleme Formu</h2>
     <div class="row">
         <div class="col-md-6">
             <form th:action="@{/saveMovie}" th:object="${movie}" method="post">
@@ -54,13 +54,6 @@
                             <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
                         </select>
                         <span th:if="${#fields.hasErrors('movieCategories')}" th:errors="*{movieCategories}" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="movieCast" class="col-form-label">Oyuncu Kadrosu</label>
-                        <select th:field="*{movieCast}" class="form-control" id="movieCast" size="10" multiple="multiple">
-                            <option th:each="actor : ${actors}" th:value="${actor.id}" th:text="${actor.fullName}"></option>
-                        </select>
-                        <span th:if="${#fields.hasErrors('movieCast')}" th:errors="*{movieCast}" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">

@@ -39,12 +39,8 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> movieCategories = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "movie_actor",
-            joinColumns = @JoinColumn(name="movie_id"),
-            inverseJoinColumns = @JoinColumn(name="actor_id"))
-    Set<Actor> movieCast = new HashSet<>();
+    @OneToMany(mappedBy = "movie")
+    private Set<Actor> movieCast;
 
     public Movie(String name, String description, int releaseYear, String media, String language) {
         this.name = name;
