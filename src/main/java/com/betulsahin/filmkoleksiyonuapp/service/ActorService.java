@@ -25,4 +25,8 @@ public class ActorService {
     public List<Actor> getAll() {
         return actorRepository.findAll();
     }
+
+    public void delete(Actor actor) {
+        actorRepository.delete(actor);
+    }
 }

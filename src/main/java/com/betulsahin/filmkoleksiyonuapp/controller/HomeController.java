@@ -90,6 +90,14 @@ public class HomeController {
         return "redirect:/";
     }
 
+    @GetMapping("/actors")
+    public String showActors(Model model){
+        List<Actor> actors = actorService.getAll();
+        model.addAttribute("actors", actors);
+
+        return "actors";
+    }
+
     @GetMapping("/actor/add")
     public String showActorForm(ModelMap map){
         Actor actor = new Actor();
@@ -147,11 +155,12 @@ public class HomeController {
         return "redirect:/actors";
     }
 
-    @GetMapping("/actors")
-    public String showActors(Model model){
-        List<Actor> actors = actorService.getAll();
-        model.addAttribute("actors", actors);
+    @GetMapping("/actor/delete/{id}")
+    public String deleteActor(@PathVariable long id){
+        Actor actor = actorService.getById(id)
+                .orElseThrow(()->new IllegalArgumentException(String.format(INVALID_ID, id)));
+        actorService.delete(actor);
 
-        return "actors";
+        return "redirect:/actors";
     }
 }
