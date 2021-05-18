@@ -25,6 +25,7 @@ import java.util.List;
 public class HomeController {
 
     private static final String INVALID_ID = "Invalid id: %s";
+
     @Autowired
     private MovieService movieService;
 
