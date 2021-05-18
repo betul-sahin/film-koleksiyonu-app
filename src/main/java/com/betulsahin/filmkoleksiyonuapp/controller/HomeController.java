@@ -5,6 +5,7 @@ import com.betulsahin.filmkoleksiyonuapp.entity.ActorRole;
 import com.betulsahin.filmkoleksiyonuapp.entity.Category;
 import com.betulsahin.filmkoleksiyonuapp.entity.Movie;
 import com.betulsahin.filmkoleksiyonuapp.service.ActorService;
+import com.betulsahin.filmkoleksiyonuapp.service.CategoryService;
 import com.betulsahin.filmkoleksiyonuapp.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +34,58 @@ public class HomeController {
     @Autowired
     private ActorService actorService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @PostConstruct
+    public void init(){
+        Category categoryAile = new Category("Aile");
+        categoryService.save(categoryAile);
+
+        Category categoryDram = new Category("Dram");
+        categoryDram = categoryService.save(categoryDram);
+
+        Category categoryAksiyon = new Category("Aksiyon");
+        categoryAksiyon = categoryService.save(categoryAksiyon);
+
+        Category categoryPolisiye = new Category("Polisiye");
+        categoryPolisiye = categoryService.save(categoryPolisiye);
+
+        Category categoryKorku = new Category("Korku");
+        categoryService.save(categoryKorku);
+
+        Category categoryRomantik = new Category("Romantik");
+        categoryService.save(categoryRomantik);
+
+        Category categoryKomedi = new Category("Komedi");
+        categoryKomedi = categoryService.save(categoryKomedi);
+
+        Movie movie1 = new Movie("Hababam Sınıfı","Hababam Sınıfı özeti",1900, "mp4", "TR", categoryDram, categoryKomedi);
+        movieService.save(movie1);
+        Movie movie2 = new Movie("Gladyatör","Gladyatör özeti",2000, "mp4", "EN", categoryPolisiye, categoryAksiyon);
+        movieService.save(movie2);
+    }
+
     @GetMapping
+    public String home(ModelMap map){
+        List<Movie> movies = movieService.getAll();
+        map.addAttribute("movies", movies);
+
+        return "index";
+    }
+
+    @GetMapping("/movies")
     public String showMovieList(Model model){
         List<Movie> movies = movieService.getAll();
         model.addAttribute("movies", movies);
-        return "index";
+        return "movies";
     }
 
     @GetMapping("/movie/add")
     public String showAddMovieForm(ModelMap map){
         Movie movie = new Movie();
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category());
         List<Actor> actors = actorService.getAll();
+        List<Category> categories = categoryService.getAll();
 
         map.addAttribute("movie", movie);
         map.addAttribute("actors", actors);

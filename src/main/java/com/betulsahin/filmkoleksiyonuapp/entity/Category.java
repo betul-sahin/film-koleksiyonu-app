@@ -28,4 +28,8 @@ public class Category {
     public Category(String name) {
         this.name = name;
     }
+
+    public void addMovie(Movie movie){
+        movies.add(movie);
+    }
 }

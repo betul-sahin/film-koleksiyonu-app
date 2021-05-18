@@ -38,4 +38,8 @@ public class MovieService {
     public void delete(Movie movie){
         movieRepository.delete(movie);
     }
+
+    public void deleteAll() {
+        movieRepository.deleteAll();
+    }
 }

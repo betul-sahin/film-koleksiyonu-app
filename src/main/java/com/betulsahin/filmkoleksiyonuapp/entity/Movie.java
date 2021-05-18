@@ -8,6 +8,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @NoArgsConstructor
@@ -37,16 +39,19 @@ public class Movie {
             name = "movie_category",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    Set<Category> movieCategories = new HashSet<>();
+    Set<Category> movieCategories;
 
     @OneToMany(mappedBy = "movie")
     private Set<Actor> movieCast;
 
-    public Movie(String name, String description, int releaseYear, String media, String language) {
+    public Movie(String name, String description, int releaseYear, String media, String language, Category... category) {
         this.name = name;
         this.description = description;
         this.releaseYear = releaseYear;
         this.media = media;
         this.language = language;
+        this.movieCategories = Stream.of(category).collect(Collectors.toSet());
+        this.movieCategories.forEach(x -> x.getMovies().add(this));
     }
+
 }
