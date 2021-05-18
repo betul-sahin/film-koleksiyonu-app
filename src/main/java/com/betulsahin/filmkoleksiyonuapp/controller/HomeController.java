@@ -13,10 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -69,9 +66,25 @@ public class HomeController {
     @GetMapping
     public String home(ModelMap map){
         List<Movie> movies = movieService.getAll();
+        List<Category> categories = categoryService.getAll();
+
         map.addAttribute("movies", movies);
+        map.addAttribute("selectedCategory", new Category());
+        map.addAttribute("categories", categories);
 
         return "index";
+    }
+
+    @PostMapping
+    public String home(@ModelAttribute Category selectedCategory, ModelMap map){
+        List<Movie> movies = movieService.getAll();
+        List<Category> categories = categoryService.getAll();
+
+        map.addAttribute("movies", movies);
+        map.addAttribute("selectedCategory", new Category());
+        map.addAttribute("categories", categories);
+
+        return "redirect:/";
     }
 
     @GetMapping("/movies")
