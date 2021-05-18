@@ -37,8 +37,8 @@
                         <td>
                             <p th:each="cast : ${movie.movieCast}" th:text="${cast.fullName}"></p>
                         </td>
-                        <td><a th:href="@{/edit/{id}(id=${movie.id})}" class="btn btn-warning">Düzenle</i></a></td>
-                        <td><a th:href="@{/delete/{id}(id=${movie.id})}" class="btn btn-danger">Sil</a></td>
+                        <td><a th:href="@{/movie/edit/{id}(id=${movie.id})}" class="btn btn-warning">Düzenle</i></a></td>
+                        <td><a th:href="@{/movie/delete/{id}(id=${movie.id})}" class="btn btn-danger">Sil</a></td>
                     </tr>
                     </tbody>
                 </table>

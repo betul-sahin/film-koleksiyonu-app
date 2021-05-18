@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import java.util.List;
 @Controller
 public class HomeController {
 
+    private static final String INVALID_MOVIE_ID = "Invalid id: %s";
     @Autowired
     private MovieService movieService;
 
@@ -51,6 +53,26 @@ public class HomeController {
     public String saveMovieForm(@Valid Movie movie, BindingResult result) {
         if(result.hasErrors()){
             return "add-movie";
+        }
+
+        movieService.save(movie);
+        return "redirect:/";
+    }
+
+    @GetMapping("/movie/edit/{id}")
+    public String showUpdateForm(@PathVariable long id, Model model){
+        Movie movie = movieService.getById(id).orElseThrow(
+                ()->new IllegalArgumentException(String.format(INVALID_MOVIE_ID, id)));
+        model.addAttribute("movie", movie);
+
+        return "update-movie";
+    }
+
+    @PostMapping("/movie/update/{id}")
+    public String updateMovie(@PathVariable long id, @Valid Movie movie,BindingResult result){
+        if(result.hasErrors()){
+            movie.setId(id);
+            return "update-movie";
         }
 
         movieService.save(movie);
