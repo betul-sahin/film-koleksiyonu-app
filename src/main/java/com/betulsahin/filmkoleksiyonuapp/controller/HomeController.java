@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private static final String INVALID_MOVIE_ID = "Invalid id: %s";
+    private static final String INVALID_ID = "Invalid id: %s";
     @Autowired
     private MovieService movieService;
 
@@ -32,11 +32,12 @@ public class HomeController {
 
     @GetMapping
     public String showMovieList(Model model){
-        model.addAttribute("movies", movieService.getAll());
+        List<Movie> movies = movieService.getAll();
+        model.addAttribute("movies", movies);
         return "index";
     }
 
-    @GetMapping("/addMovie")
+    @GetMapping("/movie/add")
     public String showAddMovieForm(ModelMap map){
         Movie movie = new Movie();
         List<Category> categories = new ArrayList<>();
@@ -49,7 +50,7 @@ public class HomeController {
         return "add-movie";
     }
 
-    @PostMapping("/saveMovie")
+    @PostMapping("/movie/save")
     public String saveMovieForm(@Valid Movie movie, BindingResult result) {
         if(result.hasErrors()){
             return "add-movie";
@@ -62,7 +63,7 @@ public class HomeController {
     @GetMapping("/movie/edit/{id}")
     public String showUpdateForm(@PathVariable long id, Model model){
         Movie movie = movieService.getById(id).orElseThrow(
-                ()->new IllegalArgumentException(String.format(INVALID_MOVIE_ID, id)));
+                ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
         model.addAttribute("movie", movie);
 
         return "update-movie";
@@ -79,7 +80,7 @@ public class HomeController {
         return "redirect:/";
     }
 
-    @GetMapping("/addActor")
+    @GetMapping("/actor/add")
     public String showActorForm(ModelMap map){
         Actor actor = new Actor();
         List<ActorRole> actorRoles = new ArrayList<>();
@@ -95,13 +96,52 @@ public class HomeController {
         return "add-actor";
     }
 
-    @PostMapping("/saveActor")
-    public String saveActor(@Valid Actor actor, BindingResult result){
+    @PostMapping("/actor/save")
+    public String saveActor(@Valid Actor actor, BindingResult result, Model model){
         if(result.hasErrors()){
             return "add-actor";
         }
 
         actorService.save(actor);
-        return "redirect:/";
+        List<Actor> actors = actorService.getAll();
+        model.addAttribute("actors", actors);
+        return "actors";
+    }
+
+    @GetMapping("/actor/edit/{id}")
+    public String showUpdateActorForm(@PathVariable long id, ModelMap map){
+        Actor actor = actorService.getById(id).orElseThrow(
+                ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
+
+        List<ActorRole> actorRoles = new ArrayList<>();
+        actorRoles.add(ActorRole.BASROL);
+        actorRoles.add(ActorRole.YARDIMCIOYUNCU);
+        actorRoles.add(ActorRole.KONUKOYUNCU);
+
+        List<Movie> movies = movieService.getAll();
+
+        map.addAttribute("actor", actor);
+        map.addAttribute("actorRoles", actorRoles);
+        map.addAttribute("movies", movies);
+        return "update-actor";
+    }
+
+    @PostMapping("/actor/update/{id}")
+    public String updateActor(@PathVariable long id, @Valid Actor actor, BindingResult result){
+        if(result.hasErrors()){
+            actor.setId(id);
+            return "update-actor";
+        }
+
+        actorService.save(actor);
+        return "redirect:/actors";
+    }
+
+    @GetMapping("/actors")
+    public String showActors(Model model){
+        List<Actor> actors = actorService.getAll();
+        model.addAttribute("actors", actors);
+
+        return "actors";
     }
 }
