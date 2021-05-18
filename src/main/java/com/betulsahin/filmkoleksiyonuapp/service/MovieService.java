@@ -22,16 +22,20 @@ public class MovieService {
     @Autowired
     private ActorRepository actorRepository;
 
-    public Movie save(Movie movie){
-        Movie savedMovie = movieRepository.save(movie);
-        return savedMovie;
-    }
-
     public Optional<Movie> getById(long id){
         return movieRepository.findById(id);
     }
 
     public List<Movie> getAll(){
         return movieRepository.findAll();
+    }
+
+    public Movie save(Movie movie){
+        Movie savedMovie = movieRepository.save(movie);
+        return savedMovie;
+    }
+
+    public void delete(Movie movie){
+        movieRepository.delete(movie);
     }
 }
