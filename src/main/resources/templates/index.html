@@ -8,9 +8,9 @@
     <script th:src="@{/js/bootstrap.min.js}" type="text/javascript"></script>
 </head>
 <body>
-<div th:switch="${model}" class="container my-5">
+<div th:switch="${movies}" class="container my-5">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h2 th:case="null">Henüz film eklenmedi!</h2>
             <div th:case="*">
                 <h2 class="my-5">Film Listesi</h2>
@@ -24,26 +24,26 @@
                         <th>Dil</th>
                         <th>Türü</th>
                         <th>Oyuncu Kadrosu</th>
-                        <th>İncele</th>
-                        <th>Sil</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="movie : ${model}">
+                    <tr th:each="movie : ${movies}">
                         <td th:text="${movie.name}"></td>
                         <td th:text="${movie.description}"></td>
                         <td th:text="${movie.releaseYear}"></td>
                         <td th:text="${movie.media}"></td>
                         <td th:text="${movie.language}"></td>
                         <td></td>
-                        <td></td>
-                        <td><a th:href="@{/edit/{id}(id=${movie.id})}" class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i></a></td>
-                        <td><a th:href="@{/delete/{id}(id=${movie.id})}" class="btn btn-primary"><i class="fas fa-user-times ml-2"></i></a></td>
+                        <td>
+                            <p th:each="cast : ${movie.movieCast}" th:text="${cast.fullName}"></p>
+                        </td>
+                        <td><a th:href="@{/edit/{id}(id=${movie.id})}" class="btn btn-warning">Düzenle</i></a></td>
+                        <td><a th:href="@{/delete/{id}(id=${movie.id})}" class="btn btn-danger">Sil</a></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <p class="my-5"><a href="/addMovie" class="btn btn-primary">Yeni Film Ekle</a></p>
+            <p class="my-5"><a href="/addMovie" class="btn btn-primary">Film Ekle</a> | <a href="/addActor" class="btn btn-primary">Oyuncu Ekle</a></p>
         </div>
     </div>
 </div>
