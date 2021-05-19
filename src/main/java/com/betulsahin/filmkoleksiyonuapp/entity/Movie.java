@@ -44,14 +44,16 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     public Set<Actor> movieCast;
 
-    public Movie(String name, String description, int releaseYear, String media, String language, Category... category) {
+    public Movie(String name, String description, int releaseYear, String media, String language) {
         this.name = name;
         this.description = description;
         this.releaseYear = releaseYear;
         this.media = media;
         this.language = language;
+    }
+
+    public void setMovieCategories(Category... category){
         this.movieCategories = Stream.of(category).collect(Collectors.toSet());
         this.movieCategories.forEach(x -> x.getMovies().add(this));
     }
-
 }

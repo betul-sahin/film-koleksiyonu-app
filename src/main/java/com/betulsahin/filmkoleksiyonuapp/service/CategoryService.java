@@ -31,6 +31,10 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+    public void saveAll(List<Category> categories){
+        categoryRepository.saveAll(categories);
+    }
+
     public void deleteAll() {
         categoryRepository.deleteAll();
     }

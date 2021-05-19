@@ -7,6 +7,9 @@ import com.betulsahin.filmkoleksiyonuapp.entity.Movie;
 import com.betulsahin.filmkoleksiyonuapp.service.ActorService;
 import com.betulsahin.filmkoleksiyonuapp.service.CategoryService;
 import com.betulsahin.filmkoleksiyonuapp.service.MovieService;
+import com.betulsahin.filmkoleksiyonuapp.utils.ActorUtils;
+import com.betulsahin.filmkoleksiyonuapp.utils.CategoryUtils;
+import com.betulsahin.filmkoleksiyonuapp.utils.MovieUtils;
 import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -43,43 +46,19 @@ public class HomeController {
         movieService.deleteAll();
         actorService.deleteAll();
 
-        Category categoryAile = new Category("Aile");
-        categoryService.save(categoryAile);
+        List<Category> categories = CategoryUtils.buildCategories();
+        categoryService.saveAll(categories);
 
-        Category categoryDram = new Category("Dram");
-        categoryDram = categoryService.save(categoryDram);
+        List<Movie> movies = MovieUtils.buildMovies();
+        movies.get(0).setMovieCategories(categories.get(1), categories.get(6));
+        movies.get(1).setMovieCategories(categories.get(3), categories.get(2));
+        movieService.saveAll(movies);
 
-        Category categoryAksiyon = new Category("Aksiyon");
-        categoryAksiyon = categoryService.save(categoryAksiyon);
-
-        Category categoryPolisiye = new Category("Polisiye");
-        categoryPolisiye = categoryService.save(categoryPolisiye);
-
-        Category categoryKorku = new Category("Korku");
-        categoryService.save(categoryKorku);
-
-        Category categoryRomantik = new Category("Romantik");
-        categoryService.save(categoryRomantik);
-
-        Category categoryKomedi = new Category("Komedi");
-        categoryKomedi = categoryService.save(categoryKomedi);
-
-        Movie movie1 = new Movie("Hababam Sınıfı","Hababam Sınıfı özeti",1900, "mp4", "TR", categoryDram, categoryKomedi);
-        movieService.save(movie1);
-        Movie movie2 = new Movie("Gladyatör","Gladyatör özeti",2000, "mp4", "EN", categoryPolisiye, categoryAksiyon);
-        movieService.save(movie2);
-
-        Actor actor1 = new Actor("Russell Crowe", ActorRole.BASROL.name());
-        actor1.setMovie(movie2);
-        actorService.save(actor1);
-
-        Actor actor2 = new Actor("Joaquin Phoenix", ActorRole.YARDIMCIOYUNCU.name());
-        actor2.setMovie(movie2);
-        actorService.save(actor2);
-
-        Actor actor3 = new Actor("Connie Nielsen", ActorRole.KONUKOYUNCU.name());
-        actor3.setMovie(movie2);
-        actorService.save(actor3);
+        List<Actor> actors = ActorUtils.buildActors();
+        actors.get(0).setMovie(movies.get(1));
+        actors.get(1).setMovie(movies.get(1));
+        actors.get(2).setMovie(movies.get(1));
+        actorService.saveAll(actors);
     }
 
     @GetMapping

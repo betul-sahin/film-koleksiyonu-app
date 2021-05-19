@@ -13,21 +13,25 @@ public class ActorService {
     @Autowired
     private ActorRepository actorRepository;
 
-    public Actor save(Actor actor){
-        Actor savedActor = actorRepository.save(actor);
-        return savedActor;
+    public Optional<Actor> getById(long id){
+        return actorRepository.findById(id);
     }
 
     public Optional<Actor> getByKeyword(String keyword){
         return actorRepository.findByKeyword(keyword);
     }
 
-    public Optional<Actor> getById(long id){
-        return actorRepository.findById(id);
-    }
-
     public List<Actor> getAll() {
         return actorRepository.findAll();
+    }
+
+    public Actor save(Actor actor){
+        Actor savedActor = actorRepository.save(actor);
+        return savedActor;
+    }
+
+    public void saveAll(List<Actor> actors){
+        actorRepository.saveAll(actors);
     }
 
     public void delete(Actor actor) {

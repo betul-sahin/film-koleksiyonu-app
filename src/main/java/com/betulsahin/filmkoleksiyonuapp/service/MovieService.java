@@ -24,23 +24,6 @@ public class MovieService {
         return movieRepository.findAllByKeyword(keyword);
     }
 
-    public List<Movie> getAll(){
-        return movieRepository.findAll();
-    }
-
-    public Movie save(Movie movie){
-        Movie savedMovie = movieRepository.save(movie);
-        return savedMovie;
-    }
-
-    public void delete(Movie movie){
-        movieRepository.delete(movie);
-    }
-
-    public void deleteAll() {
-        movieRepository.deleteAll();
-    }
-
     public List<Movie> getAllByFilter(String filter) {
         List<Movie> movies = null;
         if(filter.equals("ASC")){
@@ -50,5 +33,26 @@ public class MovieService {
             movies = movieRepository.findAllByReleaseYearDESC();
         }
         return movies;
+    }
+
+    public List<Movie> getAll(){
+        return movieRepository.findAll();
+    }
+
+    public Movie save(Movie movie){
+        Movie savedMovie = movieRepository.save(movie);
+        return savedMovie;
+    }
+
+    public void saveAll(List<Movie> movies){
+        movieRepository.saveAll(movies);
+    }
+
+    public void delete(Movie movie){
+        movieRepository.delete(movie);
+    }
+
+    public void deleteAll() {
+        movieRepository.deleteAll();
     }
 }
