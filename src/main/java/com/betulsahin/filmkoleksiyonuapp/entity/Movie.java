@@ -39,10 +39,10 @@ public class Movie {
             name = "movie_category",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    Set<Category> movieCategories;
+    public Set<Category> movieCategories;
 
-    @OneToMany(mappedBy = "movie")
-    private Set<Actor> movieCast;
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    public Set<Actor> movieCast;
 
     public Movie(String name, String description, int releaseYear, String media, String language, Category... category) {
         this.name = name;

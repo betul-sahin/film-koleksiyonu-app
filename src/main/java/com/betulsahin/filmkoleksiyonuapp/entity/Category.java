@@ -22,14 +22,10 @@ public class Category {
     @Column(length = 100)
     private String name;
 
-    @ManyToMany(mappedBy = "movieCategories")
+    @ManyToMany(mappedBy = "movieCategories", cascade = CascadeType.ALL)
     Set<Movie> movies = new HashSet<>();
 
     public Category(String name) {
         this.name = name;
-    }
-
-    public void addMovie(Movie movie){
-        movies.add(movie);
     }
 }

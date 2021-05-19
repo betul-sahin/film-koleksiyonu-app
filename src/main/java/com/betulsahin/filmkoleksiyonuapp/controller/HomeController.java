@@ -7,7 +7,9 @@ import com.betulsahin.filmkoleksiyonuapp.entity.Movie;
 import com.betulsahin.filmkoleksiyonuapp.service.ActorService;
 import com.betulsahin.filmkoleksiyonuapp.service.CategoryService;
 import com.betulsahin.filmkoleksiyonuapp.service.MovieService;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -17,8 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class HomeController {
@@ -36,6 +39,10 @@ public class HomeController {
 
     @PostConstruct
     public void init(){
+        categoryService.deleteAll();;
+        movieService.deleteAll();
+        actorService.deleteAll();
+
         Category categoryAile = new Category("Aile");
         categoryService.save(categoryAile);
 
@@ -61,30 +68,78 @@ public class HomeController {
         movieService.save(movie1);
         Movie movie2 = new Movie("Gladyatör","Gladyatör özeti",2000, "mp4", "EN", categoryPolisiye, categoryAksiyon);
         movieService.save(movie2);
+
+        Actor actor1 = new Actor("Russell Crowe", ActorRole.BASROL.name());
+        actor1.setMovie(movie2);
+        actorService.save(actor1);
+
+        Actor actor2 = new Actor("Joaquin Phoenix", ActorRole.YARDIMCIOYUNCU.name());
+        actor2.setMovie(movie2);
+        actorService.save(actor2);
+
+        Actor actor3 = new Actor("Connie Nielsen", ActorRole.KONUKOYUNCU.name());
+        actor3.setMovie(movie2);
+        actorService.save(actor3);
     }
 
     @GetMapping
-    public String home(ModelMap map){
+    public String home(Model model){
         List<Movie> movies = movieService.getAll();
         List<Category> categories = categoryService.getAll();
 
-        map.addAttribute("movies", movies);
-        map.addAttribute("selectedCategory", new Category());
-        map.addAttribute("categories", categories);
-
+        model.addAttribute("movies", movies);
+        model.addAttribute("categories", categories);
         return "index";
     }
 
-    @PostMapping
-    public String home(@ModelAttribute Category selectedCategory, ModelMap map){
-        List<Movie> movies = movieService.getAll();
+    @PostMapping("/movie/filter")
+    public String filterMovie(@RequestParam String filter, Model model){
+        List<Movie> movies = movieService.getAllByFilter(filter);
         List<Category> categories = categoryService.getAll();
 
-        map.addAttribute("movies", movies);
-        map.addAttribute("selectedCategory", new Category());
-        map.addAttribute("categories", categories);
+        model.addAttribute("movies", movies);
+        model.addAttribute("categories", categories);
+        return "index";
+    }
 
-        return "redirect:/";
+    @PostMapping("/movie/name/search")
+    public String searchMovie(@RequestParam String keyword, Model model){
+        List<Movie> movies = movieService.getAllByKeyword(keyword);
+        List<Category> categories = categoryService.getAll();
+
+        model.addAttribute("movies", movies);
+        model.addAttribute("categories", categories);
+        return "index";
+    }
+
+    @PostMapping("/movie/actor/search")
+    public String searchActor(@RequestParam String keyword, Model model){
+        Actor searchedActor = actorService
+                .getByKeyword(keyword)
+                .get();
+        Movie searchedMovie = searchedActor.getMovie();
+        List<Movie> movies = Arrays.asList(searchedMovie);
+
+        List<Category> categories = categoryService.getAll();
+
+        model.addAttribute("movies", movies);
+        model.addAttribute("categories", categories);
+        return "index";
+    }
+
+    @PostMapping("/movie/category/search")
+    public String searchCategory(@RequestParam String keyword, Model model){
+        Category searchedCategory = categoryService
+                .getByKeyword(keyword)
+                .get();
+        Set<Movie> searchedMovies = searchedCategory.getMovies();
+        List<Movie> movies = searchedMovies.stream().collect(Collectors.toList());
+
+        List<Category> categories = categoryService.getAll();
+
+        model.addAttribute("movies", movies);
+        model.addAttribute("categories", categories);
+        return "index";
     }
 
     @GetMapping("/movies")

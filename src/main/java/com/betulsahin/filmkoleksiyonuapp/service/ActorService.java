@@ -18,6 +18,10 @@ public class ActorService {
         return savedActor;
     }
 
+    public Optional<Actor> getByKeyword(String keyword){
+        return actorRepository.findByKeyword(keyword);
+    }
+
     public Optional<Actor> getById(long id){
         return actorRepository.findById(id);
     }
@@ -28,5 +32,9 @@ public class ActorService {
 
     public void delete(Actor actor) {
         actorRepository.delete(actor);
+    }
+
+    public void deleteAll(){
+        actorRepository.deleteAll();
     }
 }

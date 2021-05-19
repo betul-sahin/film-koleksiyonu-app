@@ -10,14 +10,14 @@
 <body>
 <!--navbar-->
 <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Film Koleksiyonu</a>
+    <a class="navbar-brand" href="/">Film Koleksiyonu</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Anasayfa <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/">Anasayfa <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/movies">Film Listesi</a>
@@ -32,15 +32,54 @@
 <!--content-->
 <div th:switch="${movies}" class="container my-5">
     <div class="row">
-        <div class="col-md-10">
-            <label for="category" class="col-form-label">Türü</label>
-            <select th:field="*{selectedCategory}" class="form-control" id="category">
-                <option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-            </select>
-            <span th:if="${#fields.hasErrors('selectedCategory')}" th:errors="*{selectedCategory}" class="text-danger"></span>
+        <div class="col-md-3">
+            <form th:action="@{/movie/name/search}" class="form-horizontal" method="post">
+                <div class="form-group">
+                    <label for="keyword" class="col-form-label">Film Ara</label>
+                    <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Film adı ile arama">
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Ara">
+                </div>
+            </form>
         </div>
-        <div class="col-md-2">
-            <input type="submit" class="btn btn-success" value="Türe Göre Ara">
+        <div class="col-md-3">
+            <form th:action="@{/movie/actor/search}" class="form-horizontal" method="post">
+                <div class="form-group">
+                    <label for="keyword2" class="col-form-label">Oyuncu Ara</label>
+                    <input type="text" name="keyword" id="keyword2" class="form-control" placeholder="Oyuncu adı ile arama">
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Ara">
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <form th:action="@{/movie/category/search}" class="form-horizontal" method="post">
+                <div class="form-group">
+                    <label for="keyword3" class="col-form-label">Tür Ara</label>
+                    <select name="keyword" class="form-control" id="keyword3">
+                        <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Ara">
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <form th:action="@{/movie/filter}" class="form-horizontal" method="post">
+                <div class="form-group">
+                    <label class="col-form-label" for="filter">Yayın Yılı</label>
+                    <select name="filter" class="form-control" id="filter">
+                        <option th:value="ASC" selected>En Eski Filmler</option>
+                        <option th:value="DESC">En Yeni Filmler</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Sırala">
+                </div>
+            </form>
         </div>
     </div>
     <div class="row">
