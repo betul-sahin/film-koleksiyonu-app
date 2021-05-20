@@ -22,8 +22,9 @@ public class Category {
     @Column(length = 100)
     private String name;
 
-    @ManyToMany(mappedBy = "movieCategories", cascade = CascadeType.ALL)
-    Set<Movie> movies = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name="movie_id")
+    public Movie movie;
 
     public Category(String name) {
         this.name = name;

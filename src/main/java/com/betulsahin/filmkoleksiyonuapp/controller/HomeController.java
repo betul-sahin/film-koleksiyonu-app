@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 public class HomeController {
 
     private static final String INVALID_ID = "Invalid id: %s";
+    private static final String NO_FOUND = "No Found row with this keyword: %s";
 
     @Autowired
     private MovieService movieService;
@@ -46,12 +47,7 @@ public class HomeController {
         movieService.deleteAll();
         actorService.deleteAll();
 
-        List<Category> categories = CategoryUtils.buildCategories();
-        categoryService.saveAll(categories);
-
         List<Movie> movies = MovieUtils.buildMovies();
-        movies.get(0).setMovieCategories(categories.get(1), categories.get(6));
-        movies.get(1).setMovieCategories(categories.get(3), categories.get(2));
         movieService.saveAll(movies);
 
         List<Actor> actors = ActorUtils.buildActors();
@@ -59,6 +55,13 @@ public class HomeController {
         actors.get(1).setMovie(movies.get(1));
         actors.get(2).setMovie(movies.get(1));
         actorService.saveAll(actors);
+
+        List<Category> categories = CategoryUtils.buildCategories();
+        categories.get(1).setMovie(movies.get(0));
+        categories.get(6).setMovie(movies.get(0));
+        categories.get(3).setMovie(movies.get(1));
+        categories.get(2).setMovie(movies.get(1));
+        categoryService.saveAll(categories);
     }
 
     @GetMapping
@@ -95,7 +98,9 @@ public class HomeController {
     public String searchActor(@RequestParam String keyword, Model model){
         Actor searchedActor = actorService
                 .getByKeyword(keyword)
-                .get();
+                .orElseThrow(
+                        ()->new IllegalArgumentException(String.format(NO_FOUND, keyword)));
+
         Movie searchedMovie = searchedActor.getMovie();
         List<Movie> movies = Arrays.asList(searchedMovie);
 
@@ -110,9 +115,11 @@ public class HomeController {
     public String searchCategory(@RequestParam String keyword, Model model){
         Category searchedCategory = categoryService
                 .getByKeyword(keyword)
-                .get();
-        Set<Movie> searchedMovies = searchedCategory.getMovies();
-        List<Movie> movies = searchedMovies.stream().collect(Collectors.toList());
+                .orElseThrow(
+                        ()->new IllegalArgumentException(String.format(NO_FOUND, keyword)));
+
+        Movie searchedMovies = searchedCategory.getMovie();
+        List<Movie> movies = Arrays.asList(searchedMovies);
 
         List<Category> categories = categoryService.getAll();
 
@@ -131,11 +138,9 @@ public class HomeController {
     @GetMapping("/movie/add")
     public String showAddMovieForm(ModelMap map){
         Movie movie = new Movie();
-        List<Actor> actors = actorService.getAll();
         List<Category> categories = categoryService.getAll();
 
         map.addAttribute("movie", movie);
-        map.addAttribute("actors", actors);
         map.addAttribute("categories", categories);
         return "add-movie";
     }
@@ -151,16 +156,18 @@ public class HomeController {
     }
 
     @GetMapping("/movie/edit/{id}")
-    public String showUpdateForm(@PathVariable long id, Model model){
+    public String showUpdateMovieForm(@PathVariable long id, ModelMap map){
         Movie movie = movieService.getById(id).orElseThrow(
                 ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
-        model.addAttribute("movie", movie);
+        List<Category> categories = categoryService.getAll();
 
+        map.addAttribute("movie", movie);
+        map.addAttribute("categories", categories);
         return "update-movie";
     }
 
     @PostMapping("/movie/update/{id}")
-    public String updateMovie(@PathVariable long id, @Valid Movie movie,BindingResult result){
+    public String updateMovie(@PathVariable long id, @Valid Movie movie, BindingResult result){
         if(result.hasErrors()){
             movie.setId(id);
             return "update-movie";

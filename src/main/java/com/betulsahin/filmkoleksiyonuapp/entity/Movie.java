@@ -34,11 +34,7 @@ public class Movie {
 
     private String language;
 
-    @ManyToMany
-    @JoinTable(
-            name = "movie_category",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     public Set<Category> movieCategories;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
@@ -50,10 +46,5 @@ public class Movie {
         this.releaseYear = releaseYear;
         this.media = media;
         this.language = language;
-    }
-
-    public void setMovieCategories(Category... category){
-        this.movieCategories = Stream.of(category).collect(Collectors.toSet());
-        this.movieCategories.forEach(x -> x.getMovies().add(this));
     }
 }
