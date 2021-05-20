@@ -13,11 +13,14 @@ import java.util.Optional;
 @Service
 public class MovieService {
 
+    private static final String INVALID_ID = "Invalid id: %s";
+
     @Autowired
     private MovieRepository movieRepository;
 
-    public Optional<Movie> getById(long id){
-        return movieRepository.findById(id);
+    public Movie getById(long id){
+        return movieRepository.findById(id).orElseThrow(
+                ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
     }
 
     public List<Movie> getAllByKeyword(String keyword){
@@ -40,8 +43,7 @@ public class MovieService {
     }
 
     public Movie save(Movie movie){
-        Movie savedMovie = movieRepository.save(movie);
-        return savedMovie;
+        return movieRepository.save(movie);
     }
 
     public void saveAll(List<Movie> movies){

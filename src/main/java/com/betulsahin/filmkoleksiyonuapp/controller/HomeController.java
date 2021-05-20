@@ -29,9 +29,6 @@ import java.util.stream.Stream;
 @Controller
 public class HomeController {
 
-    private static final String INVALID_ID = "Invalid id: %s";
-    private static final String NO_FOUND = "No Found row with this keyword: %s";
-
     @Autowired
     private MovieService movieService;
 
@@ -96,10 +93,7 @@ public class HomeController {
 
     @PostMapping("/movie/actor/search")
     public String searchActor(@RequestParam String keyword, Model model){
-        Actor searchedActor = actorService
-                .getByKeyword(keyword)
-                .orElseThrow(
-                        ()->new IllegalArgumentException(String.format(NO_FOUND, keyword)));
+        Actor searchedActor = actorService.getByKeyword(keyword);
 
         Movie searchedMovie = searchedActor.getMovie();
         List<Movie> movies = Arrays.asList(searchedMovie);
@@ -113,10 +107,7 @@ public class HomeController {
 
     @PostMapping("/movie/category/search")
     public String searchCategory(@RequestParam String keyword, Model model){
-        Category searchedCategory = categoryService
-                .getByKeyword(keyword)
-                .orElseThrow(
-                        ()->new IllegalArgumentException(String.format(NO_FOUND, keyword)));
+        Category searchedCategory = categoryService.getByKeyword(keyword);
 
         Movie searchedMovies = searchedCategory.getMovie();
         List<Movie> movies = Arrays.asList(searchedMovies);
@@ -157,8 +148,7 @@ public class HomeController {
 
     @GetMapping("/movie/edit/{id}")
     public String showUpdateMovieForm(@PathVariable long id, ModelMap map){
-        Movie movie = movieService.getById(id).orElseThrow(
-                ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
+        Movie movie = movieService.getById(id);
         List<Category> categories = categoryService.getAll();
 
         map.addAttribute("movie", movie);
@@ -179,8 +169,7 @@ public class HomeController {
 
     @GetMapping("/movie/delete/{id}")
     public String deleteMovie(@PathVariable long id){
-        Movie movie = movieService.getById(id).orElseThrow(
-                ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
+        Movie movie = movieService.getById(id);
         movieService.delete(movie);
 
         return "redirect:/";
@@ -224,8 +213,7 @@ public class HomeController {
 
     @GetMapping("/actor/edit/{id}")
     public String showUpdateActorForm(@PathVariable long id, ModelMap map){
-        Actor actor = actorService.getById(id).orElseThrow(
-                ()->new IllegalArgumentException(String.format(INVALID_ID, id)));
+        Actor actor = actorService.getById(id);
 
         List<ActorRole> actorRoles = new ArrayList<>();
         actorRoles.add(ActorRole.BASROL);
@@ -253,8 +241,7 @@ public class HomeController {
 
     @GetMapping("/actor/delete/{id}")
     public String deleteActor(@PathVariable long id){
-        Actor actor = actorService.getById(id)
-                .orElseThrow(()->new IllegalArgumentException(String.format(INVALID_ID, id)));
+        Actor actor = actorService.getById(id);
         actorService.delete(actor);
 
         return "redirect:/actors";

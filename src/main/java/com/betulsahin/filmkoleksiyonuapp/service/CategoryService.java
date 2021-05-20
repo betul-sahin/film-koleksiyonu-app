@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
+    private static final String NO_FOUND = "No Found row with this keyword: %s";
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -19,8 +20,9 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    public Optional<Category> getByKeyword(String keyword){
-        return categoryRepository.findByKeyword(keyword);
+    public Category getByKeyword(String keyword){
+        return categoryRepository.findByKeyword(keyword).orElseThrow(
+                ()->new IllegalArgumentException(String.format(NO_FOUND, keyword)));
     }
 
     public List<Category> getAll(){
