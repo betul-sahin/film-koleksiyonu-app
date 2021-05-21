@@ -1,0 +1,26 @@
+# Use postgres/mypassword user/password credentials
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_USER=postgres
+
+  film-koleksiyonu-app:
+    image: betulsahinn/film-koleksiyonu-app
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - "db"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/movieappdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=mypassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
