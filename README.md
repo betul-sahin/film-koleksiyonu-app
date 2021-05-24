@@ -8,7 +8,7 @@ git clone https://github.com/betul-sahin/film-koleksiyonu-app.git
 
 #### Adım 2
 İndirdiğiniz projenin ana dizinindeyken terminalden aşağıdaki komutları sırasıyla çalıştırın.   
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d  
 docker-compose up
   
 #### Adım 3
